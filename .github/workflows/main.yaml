@@ -9,3 +9,11 @@ on:
       - synchronize
     paths:
       - 'force-app/**'
+
+jobs:
+  before-deployment:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2.4.0
