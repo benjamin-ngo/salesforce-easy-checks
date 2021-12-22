@@ -25,9 +25,9 @@ jobs:
 
       - name: Install ESLint and dependencies
         run: >-
-          npm install --save-dev 
-            @salesforce/eslint-config-lwc
-            @lwc/eslint-plugin-lwc
-            @salesforce/eslint-plugin-lightning 
-            eslint-plugin-import 
-            eslint-plugin-jest
+          npm install --save-dev
+          @salesforce/eslint-config-lwc
+          @lwc/eslint-plugin-lwc
+          @salesforce/eslint-plugin-lightning
+          eslint-plugin-import
+          eslint-plugin-jest
