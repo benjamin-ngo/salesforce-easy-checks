@@ -21,3 +21,12 @@ jobs:
       - uses: actions/setup-node@v2.5.0
         with:
           node-version: '16.13.1'
+
+      - name: Install ESLint and dependencies
+        run: >-
+          npm install --save-dev 
+            @salesforce/eslint-config-lwc
+            @lwc/eslint-plugin-lwc
+            @salesforce/eslint-plugin-lightning 
+            eslint-plugin-import 
+            eslint-plugin-jest
