@@ -3,7 +3,8 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "lint": "eslint **/{aura,lwc}/**"
+    "lint-all": "eslint **/{aura,lwc}/**/*.js",
+    "lint-diff": "eslint $(git diff --name-only HEAD '**/{aura,lwc}/**/*.js' | xargs)"
   },
   "repository": {
     "type": "git",
