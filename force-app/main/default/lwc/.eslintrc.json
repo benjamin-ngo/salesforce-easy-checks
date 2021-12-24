@@ -3,6 +3,10 @@
     "@salesforce/eslint-config-lwc/recommended",
     "@salesforce/eslint-config-lwc/i18n"
   ],
+  "rules": {
+    // This rule is disabled until repo includes full Jest support.
+    "jest/no-deprecated-functions": "off"
+  },
   "overrides": [
     {
       "files": ["*.test.js"],
