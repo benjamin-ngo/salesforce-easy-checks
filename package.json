@@ -3,8 +3,8 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "lint-all": "eslint **/{aura,lwc}/**/*.js",
-    "lint-diff": "eslint $(git diff --name-only HEAD '**/{aura,lwc}/**/*.js' | xargs)"
+    "lint-repo": "eslint \"**/{aura,lwc}/**/*.js\"",
+    "lint-diff-qa": "git diff --name-only qa | grep -E \"**/(aura|lwc)/**/*.js\" | xargs eslint"
   },
   "repository": {
     "type": "git",
@@ -20,3 +20,4 @@
     "eslint-plugin-jest": "^25.3.0"
   }
 }
+
