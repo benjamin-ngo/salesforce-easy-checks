@@ -1,0 +1,20 @@
+{
+  "name": "salesforce-easy-deployments-templated-repo",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "lint": "eslint **/{aura,lwc}/**"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/benjamin-ngo/salesforce-easy-deployments.git"
+  },
+  "author": "Benjamin Ngo",
+  "devDependencies": {
+    "@lwc/eslint-plugin-lwc": "^1.1.1",
+    "@salesforce/eslint-config-lwc": "^3.2.1",
+    "@salesforce/eslint-plugin-lightning": "^1.0.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jest": "^25.3.0"
+  }
+}
