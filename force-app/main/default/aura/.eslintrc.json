@@ -5,5 +5,9 @@
   "extends": [
     "plugin:@salesforce/eslint-plugin-aura/recommended",
     "plugin:@salesforce/eslint-plugin-aura/locker"
-  ]
+  ],
+   "rules": {
+    "vars-on-top": "off",
+    "no-unused-expressions": "off"
+  }
 }
