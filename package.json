@@ -5,7 +5,7 @@
   "scripts": {
     "lint:options": "eslint --no-error-on-unmatched-pattern",
     "lint:repo": "npm run lint:options \"**/{aura,lwc}/**/*.js\"",
-    "lint:diff:qa": "git diff --name-only qa | grep -E \"**/(aura|lwc)/**/*.js\" | xargs npm run lint:options"
+    "lint:diff:qa": "git diff --name-only qa | grep -E \".*/(aura|lwc)/.*/.*\\.js\" | xargs npm run lint:options"
   },
   "repository": {
     "type": "git",
