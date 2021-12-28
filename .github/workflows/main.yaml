@@ -15,8 +15,14 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout Repo
+      - name: Checkout repository
         uses: actions/checkout@v2.4.0
+
+      - name: Fetch relevant branches
+        run: |
+          git fetch --no-tags --depth=1 origin qa
+          git checkout qa
+          git checkout ${GITHUB_REF#refs/}
 
       - name: Install node.js
         uses: actions/setup-node@v2.5.0
