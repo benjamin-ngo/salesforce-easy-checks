@@ -3,9 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "lint:options": "eslint --no-error-on-unmatched-pattern",
-    "lint:repo": "npm run lint:options \"**/{aura,lwc}/**/*.js\"",
-    "lint:diff:qa": "git diff --name-only qa | grep -E \".*/(aura|lwc)/.*/.*\\.js\" | xargs npm run lint:options"
+    "lint:js:options": "eslint --no-error-on-unmatched-pattern",
+    "lint:js:repo": "npm run lint:js:options \"**/{aura,lwc}/**/*.js\"",
+    "lint:js:diff:qa": "git diff --name-only qa | grep -E \".*/(aura|lwc)/.*/.*\\.js$\" | xargs npm run lint:js:options"
   },
   "repository": {
     "type": "git",
