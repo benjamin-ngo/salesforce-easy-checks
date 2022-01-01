@@ -37,3 +37,6 @@ jobs:
           @salesforce/eslint-plugin-lightning
           eslint-plugin-import
           eslint-plugin-jest
+
+      - name: Lint updated JavaScript files
+        run: npm run lint:js:diff:qa 
