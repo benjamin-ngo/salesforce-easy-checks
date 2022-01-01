@@ -13,12 +13,12 @@
   },
   "author": "Benjamin Ngo",
   "devDependencies": {
-    "@lwc/eslint-plugin-lwc": "^1.1.1",
-    "@salesforce/eslint-config-lwc": "^3.2.1",
-    "@salesforce/eslint-plugin-aura": "^2.0.0",
-    "@salesforce/eslint-plugin-lightning": "^1.0.0",
-    "eslint-plugin-import": "^2.25.3",
-    "eslint-plugin-jest": "^25.3.0"
+    "@lwc/eslint-plugin-lwc": "1.1.1",
+    "@salesforce/eslint-config-lwc": "3.2.1",
+    "@salesforce/eslint-plugin-aura": "2.0.0",
+    "@salesforce/eslint-plugin-lightning": "1.0.0",
+    "eslint-plugin-import": "2.25.3",
+    "eslint-plugin-jest": "25.3.0"
   }
 }
 
