@@ -1,0 +1,7 @@
+# Sets core.autocrlf so that Developers from Windows filesystems can contribute.
+* text=auto
+
+# Below files are binary and do not need to be modified.
+*.png binary
+*.jpg binary
+*.gif binary
