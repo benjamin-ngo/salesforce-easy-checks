@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
+    "preinstall": "node scripts/preinstall.js",
     "postinstall": "./scripts/postinstall.sh",
     "lint:js:options": "eslint --no-error-on-unmatched-pattern",
     "lint:js:repo": "npm run lint:js:options \"**/{aura,lwc}/**/*.js\"",
