@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
+    "postinstall": "./scripts/postinstall.sh",
     "lint:js:options": "eslint --no-error-on-unmatched-pattern",
     "lint:js:repo": "npm run lint:js:options \"**/{aura,lwc}/**/*.js\"",
     "lint:js:diff:qa": "git diff --name-only qa | grep -E \".*/(aura|lwc)/.*/.*\\.js$\" | xargs npm run lint:js:options"
