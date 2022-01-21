@@ -29,7 +29,7 @@ jobs:
         with:
           node-version: '16.13.1'
 
-      - name: Install ESLint and dependencies
+      - name: Install ESLint, PMD, and other dependencies
         run: npm install --save-exact
 
       - name: Lint updated JavaScript files
