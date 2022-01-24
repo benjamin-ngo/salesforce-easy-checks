@@ -15,9 +15,10 @@ startScript () {
     script_name="$(basename -- "${BASH_SOURCE[0]}")"
     scripts_path=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")"; pwd)
     repo_path="${scripts_path%*/*}"
+    common_script_name="common.sh"
 
     cd "$repo_path"
-    source "${scripts_path}/common.sh"
+    source "${scripts_path}/${common_script_name}"
     checkScriptAndSetGlobalVariables
 }
 
