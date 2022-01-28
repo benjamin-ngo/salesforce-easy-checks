@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 ###########
 # Salesforce Easy Checks - Templated Script
@@ -13,19 +14,25 @@
 # Sets global variables and working directory. Runs script sanity checks.
 startScript () {
     script_name="$(basename -- "${BASH_SOURCE[0]}")"
-    scripts_path=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")"; pwd)
-    repo_path="${scripts_path%*/*}"
+    script_folder_path=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")"; pwd)
+    repo_path="${script_folder_path%*/*}"
     common_script_name="common.sh"
 
     cd "$repo_path"
-    source "${scripts_path}/${common_script_name}"
+    source "${script_folder_path}/${common_script_name}"
     checkScriptAndSetGlobalVariables
 }
 
-# Quits if correct PMD version is already installed.
-# $pmd_version is defined in $(checkScriptAndSetGlobalVariables) of common.sh
+# Quits the script if the correct PMD version is already installed.
+# Some PMD variables are defined in $(checkScriptAndSetGlobalVariables) of common.sh
 quitIfPmdAlreadyInstalled () {
-    pmd_version_output=$( ${pmd_run_command} --version 2> /dev/null )
+    # Returns if PMD is not installed.
+    if [ ! -f "${pmd_script_path}" ]; then
+        return 0
+    fi
+
+    # Quits if correct PMD version is already installed.
+    pmd_version_output=$( "${pmd_script_path}" pmd --version  )
     test "${pmd_version_output#PMD }" = "${pmd_version}"
     do_pmd_versions_match=$?
     if [ $do_pmd_versions_match -eq 0 ]; then
@@ -35,7 +42,7 @@ quitIfPmdAlreadyInstalled () {
     fi
 }
 
-# Installs PMD. Default behaviour does not overwrite files.
+# Installs PMD. Default behavior does not overwrite files.
 # $pmd_version is defined in $(checkScriptAndSetGlobalVariables) of common.sh
 installPmd () {
     pmd_download_path="https://github.com/pmd/pmd/releases/download/pmd_releases/${pmd_version}/pmd-bin-${pmd_version}.zip"
@@ -54,7 +61,7 @@ installPmd () {
     }
 }
 
-# Holds script logic. Intended to support future unit testing and troubleshooting efforts.
+# Holds script logic. Can be refactored in future to support more unit testing.
 main () {
     startScript
     quitIfPmdAlreadyInstalled
