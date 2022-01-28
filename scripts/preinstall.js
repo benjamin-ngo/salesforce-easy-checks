@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**********
-* Salesforce Easy Deployments - Templated Script
+* Salesforce Easy Checks - Templated Script
 * preinstall.js
 * Warns and quits Scripts on non-POSIX systems.
 *  

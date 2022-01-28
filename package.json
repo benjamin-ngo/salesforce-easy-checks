@@ -1,5 +1,5 @@
 {
-  "name": "salesforce-easy-deployments-templated-repo",
+  "name": "salesforce-easy-checks-templated-repo",
   "private": true,
   "version": "1.0.0",
   "scripts": {
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/benjamin-ngo/salesforce-easy-deployments.git"
+    "url": "https://github.com/benjamin-ngo/salesforce-easy-checks.git"
   },
   "author": "Benjamin Ngo",
   "devDependencies": {

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ###########
-# Salesforce Easy Deployments - Templated Script
+# Salesforce Easy Checks - Templated Script
 # postinstall.sh
 # Supports installing non-NPM dependencies (such as PMD) after running "npm install".
 #  
