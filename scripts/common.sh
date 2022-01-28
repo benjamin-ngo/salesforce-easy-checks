@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ###########
-# Salesforce Easy Deployments - Templated Script
+# Salesforce Easy Checks - Templated Script
 # common.sh
 # Runs script sanity checks and sets common global variables.
 #  

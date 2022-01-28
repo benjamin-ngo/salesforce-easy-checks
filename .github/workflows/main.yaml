@@ -1,9 +1,9 @@
-name: CI/CD
+name: Checks
      
 on: 
   pull_request:
     branches: 
-      - qa
+      - main
     types:
       - opened
       - synchronize
@@ -20,8 +20,8 @@ jobs:
 
       - name: Fetch relevant branches
         run: |
-          git fetch --no-tags --depth=1 origin qa
-          git checkout qa
+          git fetch --no-tags --depth=1 origin main
+          git checkout main
           git checkout ${GITHUB_REF#refs/}
 
       - name: Install node.js
