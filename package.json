@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
+    "test": "./scripts/testpipeline.sh",
     "preinstall": "node scripts/preinstall.js",
     "postinstall": "./scripts/postinstall.sh",
     "lint:js:options": "eslint --no-error-on-unmatched-pattern",
