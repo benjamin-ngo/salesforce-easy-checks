@@ -180,6 +180,46 @@ testsForPostinstallSH () (
     (testAndSetScriptPath "postinstall.sh") 2> /dev/null
     mv "${pmd_folder}.original" "${pmd_folder}"  || testSetupOrTeardownFailed
 )
+
+
+# @description Runs tests specific for scripts/lint.sh
+testsForLintSH () (
+    # Standard Output is redirected to suppress help message for lint.sh arguments. 
+    testAndSetScriptPath "lint.sh"
+    source "${script_path}" > /dev/null
+    
+    local invalid_branch_name="invalid branch name"
+    local empty_argument=""
+    local error_branch_name="Error: Please pass function with a valid git branch name."
+    testScriptOrFunction "quitIfBranchNameNotValid ${invalid_branch_name}" "${error_branch_name}"
+    testScriptOrFunction "quitIfBranchNameNotValid ${empty_argument}" "${error_branch_name}"
+    
+    local error_argument_incorrect_diff="Error: \$(diffForBranchAndExtension) expects two arguments."
+    testScriptOrFunction "diffForBranchAndExtension ${empty_argument}" "${error_argument_incorrect_diff}"
+    testScriptOrFunction "diffForBranchAndExtension 1 2 3" "${error_argument_incorrect_diff}"
+
+    local error_argument_incorrect_lintJS="Error: \$(lintJS) expects a space-separated list of Aura/LWC files or directories as arguments."
+    testScriptOrFunction "lintJS ${empty_argument}" "${error_argument_incorrect_lintJS}"
+    
+    local error_no_js_linter="Error with locating npm or ESLint. Ensure npm is installed, run \"npm install\" from the repo directory, and then try again."
+    mv --no-clobber "node_modules" "node_modules.original" || testSetupOrTeardownFailed
+    testScriptOrFunction "lintJS force-app" "${error_no_js_linter}"
+    mv --no-clobber "node_modules.original" "node_modules" || testSetupOrTeardownFailed
+
+    local error_argument_incorrect_cls="Error: \$(lintCls) expects Apex directories or files as arguments."
+    testScriptOrFunction "lintCls" "${error_argument_incorrect_cls}"
+
+    local error_no_cls_linter="Error with locating PMD. Please run \"./scripts/postinstall.sh\" from the repo directory and then try again."
+    mv "${pmd_folder}" "${pmd_folder}.original" || testSetupOrTeardownFailed
+    testScriptOrFunction "lintCls force-app" "${error_no_cls_linter}"
+    mv "${pmd_folder}.original" "${pmd_folder}" || testSetupOrTeardownFailed
+
+    local error_argument_incorrect_lintRepo="Error: \$(lintRepo) expects two arguments."
+    testScriptOrFunction "lintRepo ${empty_argument}" "${error_argument_incorrect_lintRepo}"
+    testScriptOrFunction "lintRepo 1 2 3" "${error_argument_incorrect_lintRepo}"
+)
+
+
 )
 
 
@@ -187,6 +227,7 @@ testsForPostinstallSH () (
 testSuiteToRunFast () {
     testAndSetScriptPath "preinstall.js"
     testsForCommonSH
+    testsForLintSH
 }
 
 
