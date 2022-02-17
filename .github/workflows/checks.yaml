@@ -1,0 +1,40 @@
+###########
+# @title Salesforce Easy Checks - Templated Github Action
+# @filename checks.yaml
+# @description Provides feedback on Salesforce code quality. 
+# @author Benjamin Ngo
+###########
+
+
+name: Check Code
+
+on: 
+  pull_request:
+    branches: 
+      - main
+    types:
+      - opened
+      - synchronize
+    paths:
+      - "force-app/**"
+
+jobs:
+  checks:
+    name: Check Code
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2.4.0
+
+      - name: Install node.js
+        uses: actions/setup-node@v2.5.0
+        with:
+          node-version: "16.13.1"
+
+      - name: Install ESLint, PMD, and other dependencies
+        run: npm install --save-exact
+
+      - name: Lint updated files
+        run: ./scripts/lint.sh "diff:all"
+

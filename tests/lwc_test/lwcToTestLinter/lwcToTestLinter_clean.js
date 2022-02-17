@@ -1,5 +1,5 @@
 /**********
-* @title Salesforce Easy Checks - JavaScript Sample
+* @title Salesforce Easy Checks - Sample JavaScript
 * @filename lwcToTestLinter_clean.js
 *
 * @description JavaScript without linting errors. Intended to test LWC linter. Refer to @source_repo and @source_path for origin.

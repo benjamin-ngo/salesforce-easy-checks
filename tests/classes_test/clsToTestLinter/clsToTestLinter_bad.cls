@@ -1,5 +1,5 @@
 /**********
-* @title Salesforce Easy Checks - Apex Sample
+* @title Salesforce Easy Checks - Sample Apex
 * @filename clsToTestLinter_bad.cls
 *
 * @description Apex without linting errors. Intended to test Apex linter. Refer to @source_repo and @source_path for origin.
