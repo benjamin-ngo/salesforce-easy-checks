@@ -178,7 +178,10 @@ testsForPostinstallSH () (
     # Standard Error is redirected to suppress curl output.
     (testAndSetScriptPath "postinstall.sh") 2> /dev/null
     (testAndSetScriptPath "postinstall.sh") 2> /dev/null
-    mv "${pmd_folder}.original" "${pmd_folder}"  || testSetupOrTeardownFailed
+    {
+        rm --recursive "${pmd_folder}" &&
+        mv "${pmd_folder}.original" "${pmd_folder}" 
+    } || testSetupOrTeardownFailed
 )
 
 
@@ -340,7 +343,7 @@ testsForLintShDiff () {
 
     # Cleans up from the test for diff of no files.
     {
-        git stash pop --quiet &&
+        git stash pop --quiet 2> /dev/null &&
         rm "${git_stash_file}"
     } || testSetupOrTeardownFailed
 }
