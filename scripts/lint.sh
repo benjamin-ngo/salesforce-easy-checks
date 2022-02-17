@@ -229,3 +229,34 @@ lintRepo () {
 }
 
 
+# @description Sets up and runs linters based on user input.
+# @param {$1} User input keyphrase to determine linting behavior.
+main () {
+    startScript
+    script_parameter="$*"
+    case "${script_parameter}" in
+
+        "diff:all")
+            local upstream_branch="main"
+            fetchBranch "${upstream_branch}"
+
+            diff_of_js_files=$(diffForBranchAndExtension "${upstream_branch}" "js")
+            diff_of_cls_files=$(diffForBranchAndExtension "${upstream_branch}" "cls" | tr "\n" ",")
+            lintRepo "${diff_of_js_files}" "${diff_of_cls_files}"
+            ;;
+
+        "repo:all")
+            local js_repo_paths="force-app/main/default/lwc force-app/main/default/aura"
+            local cls_repo_paths="force-app/main/default/classes"
+            lintRepo "${js_repo_paths}" "${cls_repo_paths}"
+            ;;
+
+        # Script returns instead of quitting to make testing easier.
+        *)
+            local error_linting_pmd="Error with arguments. Try \"./scripts/lint.sh diff:all\" to lint changed files, or try \"./scripts/lint.sh repo:all\" to lint all files."
+            displayMessageAndReturn "${error_linting_pmd}"
+            ;;
+    esac
+}
+main "$*"
+
