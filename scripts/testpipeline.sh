@@ -2,20 +2,21 @@
 set -euo pipefail
 
 ###########
-# Salesforce Easy Checks - Templated Script
-# testpipeline.sh
-# Runs automated unit and integration tests to ensure CI/CD pipeline works.
-#  
-# Last Modified: January 2022
-# By: Benjamin Ngo
+# @title Salesforce Easy Checks - Templated Script
+# @filename testpipeline.sh
+# @description Runs automated unit and integration tests to ensure checks pipeline works.
+# @author Benjamin Ngo
 ###########
 
 
-# Sets global variables and the working directory.
+# @description Sets global variables and the working directory.
 startScriptForTestpipeline () {
     script_folder_path=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")"; pwd)
-    repo_path="${script_folder_path%*/*}"
-    cd "$repo_path"
+    local repo_path="${script_folder_path%*/*}"
+    cd "${repo_path}"
+
+    pmd_version="6.41.0"
+    pmd_folder="pmd-bin-${pmd_version}"
 }
 
 
@@ -120,8 +121,8 @@ testScriptOrFunction () {
 }
 
 
-# Runs an Integration Test for the specified script file.
-# Expects the script filename as the function parameter.
+# @description Runs a test for the specified script file.
+# @param {$1} The script filename.
 testAndSetScriptPath () {
     script_name="$*"
     script_path="${script_folder_path}/${script_name}"
@@ -129,7 +130,7 @@ testAndSetScriptPath () {
 }
 
 
-# Runs tests specific for scripts/common.sh
+# @description Runs tests specific for scripts/common.sh
 testsForCommonSH () (
     testAndSetScriptPath "common.sh"
     source "$script_path" 
@@ -147,11 +148,8 @@ testsForCommonSH () (
 )
 
 
-# Runs tests specific for scripts/postinstall.sh
+# @description Runs tests specific for scripts/postinstall.sh
 testsForPostinstallSH () (
-    local pmd_version="6.41.0"
-    local pmd_folder="pmd-bin-${pmd_version}"
-
     if [ -d "${pmd_folder}" ]; then
         mv "${pmd_folder}" "${pmd_folder}.original"
     fi
@@ -166,21 +164,24 @@ testsForPostinstallSH () (
 )
 
 
-# Lists all the tests to run.
+# @description Runs fast Unit Tests for each script file.
 testSuiteToRunFast () {
     testAndSetScriptPath "preinstall.js"
     testsForCommonSH
 }
+
+
+# @description Runs slower Integration Tests for each script file.
 testSuiteToRunSlow () {
     testsForPostinstallSH
 }
 
 
-# Holds script logic.
+# @description Sets up and runs the testing pipeline.
 main () {
     startScriptForTestpipeline
-    local message_run_tests_fast="Running fast Tests now..."
-    local message_run_tests_slow="Running slow Tests now. Please wait a few minutes..."
+    local message_run_tests_fast="Running Unit Tests now..."
+    local message_run_tests_slow="Running Integration Tests now..."
     local test_results_fast
     local test_results_slow
 
@@ -196,7 +197,7 @@ main () {
 
     # Determines the cumulative test results.
     local test_results_all="${test_results_fast} ${test_results_slow}"
-    case "$test_results_all" in
+    case "${test_results_all}" in
         *"[*** FAIL ***]"* | *"[*** ERROR ***]"* ) 
             echo ""
             local error_test_suite_failed=">>> Some tests FAILED. Please check above for details. <<<"
@@ -213,3 +214,4 @@ main () {
     esac
 }
 main
+
