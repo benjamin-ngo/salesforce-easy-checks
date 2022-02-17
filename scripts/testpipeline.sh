@@ -255,6 +255,95 @@ testsForLintShLinters () {
 }
 
 
+# @description Runs tests for the $(diffForBranchAndExtension) function from scripts/lint.sh. Assumes lint.sh is sourced in beforehand.
+testsForLintShDiff () {
+    # Sets up the test for diff of new files.
+    local aura_test_directory="tests/aura_test"
+    local lwc_test_directory="tests/lwc_test"
+    local cls_test_directory="tests/classes_test"
+
+    local aura_test_directory_renamed="tests/aura"
+    local lwc_test_directory_renamed="tests/lwc"
+    local cls_test_directory_renamed="tests/classes"
+    local aura_to_lint_clean_renamed="${aura_test_directory_renamed}/auraToTestLinter/auraToTestLinter_clean.js"
+    local lwc_to_lint_clean_renamed="${lwc_test_directory_renamed}/lwcToTestLinter/lwcToTestLinter_clean.js"
+    local cls_to_lint_clean_renamed="${cls_test_directory_renamed}/clsToTestLinter/clsToTestLinter_clean.cls"
+    {
+        mv "${aura_test_directory}" "${aura_test_directory_renamed}" &&
+        mv "${lwc_test_directory}" "${lwc_test_directory_renamed}" &&
+        mv "${cls_test_directory}" "${cls_test_directory_renamed}" &&
+        git add "${aura_test_directory_renamed}" "${lwc_test_directory_renamed}" "${cls_test_directory_renamed}" 
+    } || testSetupOrTeardownFailed
+
+    # Tests $(diffForBranchAndExtension) for the diff of new files.
+    local message_js_diff_pass="Positive Function Test for "${script_name}" : \$(diffForBranchAndExtension "${branch_to_check}" js)"
+    local message_cls_diff_pass="Positive Function Test for "${script_name}" : \$(diffForBranchAndExtension "${branch_to_check}" cls)"
+    js_diff_results=$(diffForBranchAndExtension "${branch_to_check}" "js")
+    cls_diff_results=$(diffForBranchAndExtension "${branch_to_check}" "cls")
+    
+    # Manual tests are done since $(testScriptOrFunction) does not support testing output of successful exit statuses.
+    case "${js_diff_results}" in
+        *"${aura_to_lint_clean_renamed}"*"${lwc_to_lint_clean_renamed}"* )
+            echo "[ PASS ] ${message_js_diff_pass}"
+            ;;
+        *)
+            echo ""
+            echo "[*** FAIL ***] ${message_js_diff_pass}"
+            echo ""
+            ;;
+    esac
+    case "${cls_diff_results}" in
+        *"${cls_to_lint_clean_renamed}"* )
+            echo "[ PASS ] ${message_cls_diff_pass}"
+            ;;
+        *)
+            echo ""
+            echo "[*** FAIL ***] ${message_cls_diff_pass}"
+            echo ""
+            ;;
+    esac
+
+    # Cleans up from the test for diff of new files.
+    {
+        git rm --cached -r --quiet "${aura_test_directory_renamed}" "${lwc_test_directory_renamed}" "${cls_test_directory_renamed}" &&
+        mv "${aura_test_directory_renamed}" "${aura_test_directory}" &&
+        mv "${lwc_test_directory_renamed}" "${lwc_test_directory}"  &&
+        mv "${cls_test_directory_renamed}" "${cls_test_directory}"
+    } || testSetupOrTeardownFailed
+
+
+    # Sets up the test for diff of no changes.
+    local js_diff_results_stashed
+    local cls_diff_results_stashed
+    local branch_to_check_stashed="HEAD"
+    local git_stash_file=".testpipeline_gitstash.txt"
+    local stash_message="Working directory before ./scripts/testpipeline.sh"
+    {
+        touch "${git_stash_file}" &&
+        git stash push --include-untracked --message "${stash_message}" --quiet
+    } || testSetupOrTeardownFailed
+    
+    # Tests for the diff of no changes.
+    local message_js_diff_stash_pass="Positive Function Test for "${script_name}" : \$(diffForBranchAndExtension "${branch_to_check_stashed}" js)"
+    local message_cls_diff_stash_pass="Positive Function Test for "${script_name}" : \$(diffForBranchAndExtension "${branch_to_check_stashed}" cls)"
+    js_diff_results_stashed=$(diffForBranchAndExtension "HEAD" "js")
+    cls_diff_results_stashed=$(diffForBranchAndExtension "HEAD" "cls")
+    
+    # Manual tests are done since $(testScriptOrFunction) does not support testing output of successful exit statuses.
+    if [ -z "${js_diff_results_stashed}" ] && [ -z "${cls_diff_results_stashed}" ]; then
+        echo "[ PASS ] ${message_js_diff_stash_pass}"
+        echo "[ PASS ] ${message_cls_diff_stash_pass}"
+    else
+        echo "[*** FAIL ***] ${message_js_diff_stash_pass}"
+        echo "[*** FAIL ***] ${message_js_diff_stash_pass}"
+    fi
+
+    # Cleans up from the test for diff of no files.
+    {
+        git stash pop --quiet &&
+        rm "${git_stash_file}"
+    } || testSetupOrTeardownFailed
+}
 
 
 # @description Runs tests for scripts/lint.sh that involve third-party tools, including linters or git. 
