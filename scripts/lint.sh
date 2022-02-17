@@ -77,3 +77,44 @@ fetchBranch () {
 }
 
 
+# @description Lists added or modified (not deleted) files, for the specified upstream branch and file extension.
+# @param {$1} The name of the upstream git branch to diff against. 
+# @param {$2} The file extension to filter the diff against.
+diffForBranchAndExtension () {
+    # Quits if invalid arguments are provided.
+    if [ "$#" -ne "2" ]; then
+        local error_argument_incorrect="Error: \$(diffForBranchAndExtension) expects two arguments."
+        local suggestion_argument_upstream_branch="The first argument is the name of the upstream git branch to diff against."
+        local suggestion_argument_file_extension="The second argument is the file extension to filter the diff against. Valid options are \"js\" or \"cls\"."
+        displayErrorThreeLinesAndQuit "${error_argument_incorrect}" "${suggestion_argument_upstream_branch}" "${suggestion_argument_file_extension}"
+    fi
+    local upstream_branch="$1"
+    quitIfBranchNameNotValid "${upstream_branch}"
+
+    # Uses the second argument to determine git diff behavior. Quits if second argument is invalid.
+    local file_extension_to_filter_for="$2"
+    local git_path_globs
+    case "${file_extension_to_filter_for}" in
+        "js" )
+            # Test files are not supported for now.
+            git_path_globs="**/aura/*/*.js **/lwc/*/*.js :(exclude)*.test.js"
+            ;;
+        "cls" )
+            git_path_globs="**/classes/*.cls"
+            ;;
+        * )
+            local error_argument_file_extension="Error: Valid options for the second argument of \$(diffForBranchAndExtension) are \"js\" or \"cls\"."
+            displayErrorAndQuit "${error_argument_file_extension}"
+    esac
+
+    # Runs git diff against the specified file extension and upstream branch.
+    local list_of_diff
+    {
+        list_of_diff=$(git diff --name-only "${upstream_branch}" --diff-filter=d -- ${git_path_globs})
+    } ||
+    {
+        local error_git_diff="Error with git diff for branch \"${upstream_branch}\" and file extension \"${file_extension_to_filter_for}\"."
+        displayErrorAndQuit "${error_git_diff}"
+    }
+    echo "${list_of_diff}"
+}
