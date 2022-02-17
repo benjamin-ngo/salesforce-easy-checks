@@ -388,13 +388,14 @@ main () {
     local test_results_slow
 
     # Runs the tests.
+    # "|| true" prevents script-exiting tests from ending the testing pipeline.
     echo "${message_run_tests_fast}"
-    test_results_fast=$(testSuiteToRunFast) && 
-    echo "$test_results_fast" 
+    test_results_fast=$(testSuiteToRunFast) || true
+    echo "${test_results_fast}" 
     echo ""
     echo "${message_run_tests_slow}"
-    test_results_slow=$(testSuiteToRunSlow) && 
-    echo "$test_results_slow"
+    test_results_slow=$(testSuiteToRunSlow) || true
+    echo "${test_results_slow}"
     echo ""
 
     # Determines the cumulative test results.
