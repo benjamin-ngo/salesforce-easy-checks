@@ -12,11 +12,43 @@ set -euo pipefail
 # $(startScript) will set the needed $script_folder_path and $repo_path variables.
 
 
-# Displays an error message and quits the script.
-# All arguments passed to this function will be used as the message text.
+# @description Displays a message with the script name prepended.
+# @param {$1} The message text.
+displayMessage () {
+    local message="$*"
+    echo "${script_name}: ${message}" 
+}
+
+
+# @description Displays a message and returns an exit status of 0 (success).
+# @param {$1} The message text.
+displayMessageAndReturn () {
+    local message="$*"
+    echo "${script_name}: ${message}"
+    return 0
+}
+
+
+# @description Displays an error and quits the script.
+# @param {$1} The error text.
 displayErrorAndQuit () {
     local error_message="$*"
     echo "${script_name}: ${error_message}"
+    exit 1
+}
+
+
+# @description Displays a three-line error message, and then quits the script.
+# @param {$1} Error text for the first line.
+# @param {$2} Error text for the second line.
+# @param {$2} Error text for the third line.
+displayErrorThreeLinesAndQuit () {
+    local error_line_one="$1"
+    local error_line_two="$2"
+    local error_line_three="$3"
+    echo "${script_name}: ${error_line_one}"
+    echo "${script_name}: ${error_line_two}"
+    echo "${script_name}: ${error_line_three}"
     exit 1
 }
 
