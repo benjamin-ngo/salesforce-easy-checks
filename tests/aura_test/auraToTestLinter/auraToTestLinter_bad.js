@@ -1,5 +1,5 @@
 /**********
-* @title Salesforce Easy Checks - JavaScript Sample
+* @title Salesforce Easy Checks - Sample JavaScript
 * @filename auraToTestLinter_bad.js
 *
 * @description JavaScript with linting errors. Intended to test Aura linter. Refer to @source_repo and @source_path for origin.
