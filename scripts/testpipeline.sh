@@ -20,25 +20,33 @@ startScriptForTestpipeline () {
 }
 
 
-# Displays syntax help text for $(testScriptOrFunction).
-testScriptOrFunctionErrorSyntax () {
-    local error_argument_incorrect="[*** ERROR ***] Two arguments are expected for \$(testScriptOrFunction)."
-    local suggestion_argument_exit_status="To test for exit statuses of 0 or 1, try syntax \$(testScriptOrFunction \"script_path_or_function\" \"expected_exit_status\")."
-    local suggestion_argument_error_stub="To test for error messages, try syntax \$(testScriptOrFunction \"script_path_or_function\" \"expected_error_message_stub\")."
+# @description Displays an error message, without the script name prepended.
+# @param {$1} The test error message text.
+displayTestErrorAndReturn () {
+    local test_error="$*"
     echo ""
-    echo "${error_argument_incorrect}"
-    echo "${suggestion_argument_exit_status}"
-    echo "${suggestion_argument_error_stub}"
+    echo "${test_error}" 
     echo ""
     return 1
 }
 
 
-# Shows that $(testScriptOrFunction) does not support empty string arguments. 
-testScriptOrFunctionArgumentEmpty () {
-    local error_argument_empty="[*** ERROR ***] Empty strings for \$(testScriptOrFunction) are not supported"
+# @description Displays an error if environment setup or clean up for tests fail.
+testSetupOrTeardownFailed () {
+    local error_setup_failed="[*** ERROR ***] Test setup or teardown for ${script_name} has failed."
+    displayTestErrorAndReturn "${error_setup_failed}"
+}
+
+
+# @description Displays syntax help text for $(testScriptOrFunction).
+testScriptOrFunctionErrorSyntax () {
+    local error_argument_incorrect="[*** ERROR ***] Two arguments are expected for \$(testScriptOrFunction)."
+    local suggestion_argument_exit_status="To test for exit statuses, try syntax \$(testScriptOrFunction \"script_path_or_function\" \"expected_exit_status\")."
+    local suggestion_argument_error_stub="To test for partial error messages, try syntax \$(testScriptOrFunction \"script_path_or_function\" \"expected_error_message_stub\")."
     echo ""
-    echo "${error_argument_empty}"
+    echo "${error_argument_incorrect}"
+    echo "${suggestion_argument_exit_status}"
+    echo "${suggestion_argument_error_stub}"
     echo ""
     return 1
 }
