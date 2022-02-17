@@ -220,6 +220,58 @@ testsForLintSH () (
 )
 
 
+# @description Runs slower tests for the $(lintJS) and $(lintCls) functions from scripts/lint.sh. Assumes lint.sh is sourced in beforehand.
+testsForLintShLinters () {
+    # Sets up the test environment.
+    local aura_test_directory="tests/aura_test"
+    local lwc_test_directory="tests/lwc_test"
+    local cls_test_directory="tests/classes_test"
+    {
+        cp --no-clobber "force-app/main/default/aura/.eslintrc.json" "${aura_test_directory}/.eslintrc.json" &&
+        cp --no-clobber "force-app/main/default/lwc/.eslintrc.json" "${lwc_test_directory}/.eslintrc.json" 
+    } || testSetupOrTeardownFailed
+
+    # Runs various tests.
+    local aura_to_lint_clean="${aura_test_directory}/auraToTestLinter/auraToTestLinter_clean.js"
+    local lwc_to_lint_clean="${lwc_test_directory}/lwcToTestLinter/lwcToTestLinter_clean.js"
+    testScriptOrFunction "lintJS ${aura_to_lint_clean} ${lwc_to_lint_clean}" "0"
+
+    local aura_to_lint_bad="${aura_test_directory}/auraToTestLinter/auraToTestLinter_bad.js"
+    local lwc_to_lint_bad="${lwc_test_directory}/lwcToTestLinter/lwcToTestLinter_bad.js"
+    testScriptOrFunction "lintJS ${aura_to_lint_bad} ${lwc_to_lint_bad}" "10 problems (10 errors, 0 warnings)"   
+    
+    local cls_to_lint_clean="${cls_test_directory}/clsToTestLinter/clsToTestLinter_clean.cls"
+    local cls_to_lint_bad="${cls_test_directory}/clsToTestLinter/clsToTestLinter_bad.cls"
+    testScriptOrFunction "lintCls ${cls_to_lint_clean}" "0"
+    testScriptOrFunction "lintCls ${cls_to_lint_bad}" "OperationWithLimitsInLoop"
+
+    # Cleans up the test environment and performs a failing test.
+    {
+        rm "${aura_test_directory}/.eslintrc.json" &&
+        rm "${lwc_test_directory}/.eslintrc.json" 
+    } || testSetupOrTeardownFailed
+    local error_linting_js="Error: Aura/LWC linting failed due to an ESLint configuration problem or internal error."
+    testScriptOrFunction "lintJS ${lwc_to_lint_clean}" "${error_linting_js}" 2> /dev/null
+}
+
+
+
+
+# @description Runs tests for scripts/lint.sh that involve third-party tools, including linters or git. 
+testsForLintShSlow () (
+    # Standard output or error is sometimes redirected to suppress unneeded CLI messages.
+    local script_name="lint.sh"
+    local script_path="${script_folder_path}/${script_name}"
+    source "${script_path}" > /dev/null
+
+    local branch_to_check="main"
+    local branch_to_check_bad="testNotRealBranchAtAll"
+    local error_stash_or_fetch="Error with saving working directory or retrieving Git branches."
+    testScriptOrFunction "fetchBranch ${branch_to_check}" "0"  2> /dev/null
+    testScriptOrFunction "fetchBranch ${branch_to_check_bad}" "${error_stash_or_fetch}" 2> /dev/null
+
+    testsForLintShLinters
+    testsForLintShDiff
 )
 
 
@@ -234,6 +286,7 @@ testSuiteToRunFast () {
 # @description Runs slower Integration Tests for each script file.
 testSuiteToRunSlow () {
     testsForPostinstallSH
+    testsForLintShSlow
 }
 
 
