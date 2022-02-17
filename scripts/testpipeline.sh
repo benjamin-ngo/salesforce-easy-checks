@@ -154,34 +154,32 @@ testAndSetScriptPath () {
 # @description Runs tests specific for scripts/common.sh
 testsForCommonSH () (
     testAndSetScriptPath "common.sh"
-    source "$script_path" 
-    {
-        local error_display_test="\"Test message\""
-        testScriptOrFunction "displayErrorAndQuit ${error_display_test}" "${error_display_test}"
-    }
-    {
-        local error_repo_folder="Error: Parent directory of directory of Running Script does not appear correct."
-        mv --no-clobber "sfdx-project.json" "sfdx-project.json.original" &&
-        testScriptOrFunction "isRepoSetAsWorkingDirectory" "${error_repo_folder}"
-        testScriptOrFunction "checkScriptAndSetGlobalVariables" "${error_repo_folder}"
-        mv --no-clobber "sfdx-project.json.original" "sfdx-project.json"
-    }
+    source "${script_path}" 
+    
+    local error_display_test="\"Test message\""
+    testScriptOrFunction "displayErrorAndQuit ${error_display_test}" "${error_display_test}"
+    testScriptOrFunction "displayErrorThreeLinesAndQuit 111aaa 222bbb 333ccc" "222bbb"
+    
+    local error_repo_folder="Error: Parent directory of directory of Running Script does not appear correct."
+    mv --no-clobber "sfdx-project.json" "sfdx-project.json.original" || testSetupOrTeardownFailed
+    testScriptOrFunction "isRepoSetAsWorkingDirectory" "${error_repo_folder}"
+    testScriptOrFunction "checkScriptAndSetGlobalVariables" "${error_repo_folder}"
+    mv --no-clobber "sfdx-project.json.original" "sfdx-project.json" || testSetupOrTeardownFailed
 )
 
 
 # @description Runs tests specific for scripts/postinstall.sh
 testsForPostinstallSH () (
     if [ -d "${pmd_folder}" ]; then
-        mv "${pmd_folder}" "${pmd_folder}.original"
+        mv "${pmd_folder}" "${pmd_folder}.original" || testSetupOrTeardownFailed
     fi
-    {
-        # Standard Error is redirected to suppress curl output.
-        # Two tests are done to check $(installPmd) and $(quitIfPmdAlreadyInstalled) functions.
-        (testAndSetScriptPath "postinstall.sh") 2> /dev/null
-        (testAndSetScriptPath "postinstall.sh") 2> /dev/null
-    } &&
-    rm --recursive "${pmd_folder}"
-    mv "${pmd_folder}.original" "${pmd_folder}" 
+
+    # Test is repeated to test $(installPmd) and $(quitIfPmdAlreadyInstalled).
+    # Standard Error is redirected to suppress curl output.
+    (testAndSetScriptPath "postinstall.sh") 2> /dev/null
+    (testAndSetScriptPath "postinstall.sh") 2> /dev/null
+    mv "${pmd_folder}.original" "${pmd_folder}"  || testSetupOrTeardownFailed
+)
 )
 
 
