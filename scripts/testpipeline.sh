@@ -52,37 +52,37 @@ testScriptOrFunctionErrorSyntax () {
 }
 
 
-# Tests script file or function and outputs the result. Expects 2 arguments.
-    # First argument: The path of the script file, or the name of a script function.
-    # Second argument: An exit status of 0 or 1, or the expected error message stub (without the filename).
-# To test a script function, please source the script beforehand.
+# @description Tests script file or function and outputs the result. To test a script function, please source the script first.
+# @param {$1} The path of the script file, or the name of a script function.
+# @param {$2} A numeric exit status value, or the partial error message for a failure exit status.
 testScriptOrFunction () {
     # Quits if provided arguments are not supported.
     if [ "$#" -ne "2" ]; then
         testScriptOrFunctionErrorSyntax
     elif [ "$2" = "" ]; then
-        testScriptOrFunctionArgumentEmpty
+        local error_argument_empty="[*** ERROR ***] Empty strings for \$(testScriptOrFunction) are not supported."
+        displayTestErrorAndReturn "${error_argument_empty}"
     fi
 
     # Tests the script file or function. Captures the results.
     local command_to_test="$1"
     local command_to_test_output
-    command_to_test_output=$($command_to_test)
+    command_to_test_output=$(${command_to_test})
     local command_to_test_exit_status=$?
 
     # Sets labels and messages based on the input parameters.
     local test_name_type
     local unit_test_details=""
-    if [ "$command_to_test" = "$script_path" ]; then
-        test_name_type="Integration Test"
+    if [ "${command_to_test}" = "${script_path}" ]; then
+        test_name_type="Script Test"
     else
-        test_name_type="Unit Test"
+        test_name_type="Function Test"
         unit_test_details=" : \$(${command_to_test})"
     fi
 
     local expected_result="$2"
     local test_outcome_type
-    if [ "$expected_result" = "0" ]; then
+    if [ "${expected_result}" = "0" ]; then
         test_outcome_type="Positive"
     else
         test_outcome_type="Negative"
@@ -93,22 +93,35 @@ testScriptOrFunction () {
 
     # Tests to see if the output is expected. 
     local is_result_expected
+    local is_expected_result_displayed=1
     local exit_status_expected
-    case "$expected_result" in
-        "0" | "1")
-            exit_status_expected="$expected_result"
-            test "$command_to_test_exit_status" -eq "$expected_result"
+    case "${expected_result}" in
+
+        # Non-numeric ${expected_result} is assumed to be an error message stub.
+        *[!0-9]* )
+            # Parameter Expansion ensures ${output_result_comparison} is empty if there is a partial string match.
+            local output_result_comparison=${command_to_test_output##*$expected_result*}
+            is_expected_result_displayed=0
+            exit_status_expected="An exit status from 1 to 255."
+            
+            if [ -z "${output_result_comparison}" ]; then
+                [ ${command_to_test_exit_status} -ge 1 ]
+                is_result_expected=$?
+            else
+                is_result_expected=1
+            fi
             ;;
-        *)
-            exit_status_expected=1
-            local expected_error_message_full="${script_name}: ${expected_result}"
-            [ $command_to_test_exit_status -eq $exit_status_expected ] && [ "$command_to_test_output" = "$expected_error_message_full" ]
+
+        # Numeric ${expected_result} will be tested for exit status only.
+        * )
+            exit_status_expected="${expected_result}"
+            test "${command_to_test_exit_status}" -eq "${expected_result}"
+            is_result_expected=$?
             ;;
     esac
-    is_result_expected=$?
 
     # Displays results of the test.
-    if [ $is_result_expected -eq 0 ]; then
+    if [ ${is_result_expected} -eq 0 ]; then
         echo "${message_test_passes}"
         return 0
     else
@@ -118,8 +131,8 @@ testScriptOrFunction () {
         echo "Actual Exit Status: ${command_to_test_exit_status}"
 
         # If $2 is an error message stub, displays the expected output.
-        if [ "$expected_result" != 0 ] && [ "$expected_result" != 1 ]; then
-            echo "Expected Output: ${expected_error_message_full}"
+        if [ "${is_expected_result_displayed}" -eq 0 ]; then
+            echo "Expected Output: ${expected_result}"
         fi
         echo "Actual Output (on next line):"
         echo "${command_to_test_output}"
