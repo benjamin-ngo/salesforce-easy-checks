@@ -118,3 +118,68 @@ diffForBranchAndExtension () {
     }
     echo "${list_of_diff}"
 }
+
+
+# @description Lints Aura and LWC JavaScript files and outputs linting results.
+# @param {$1} Space-separated list of Aura/LWC files or directories for linting.
+lintJS () {
+    # Quits for invalid arguments, or if npm or ESLint is not installed.
+    local js_files_to_lint="$*"
+    local js_linter_path="node_modules/eslint/bin/eslint.js"
+    if [ -z "${js_files_to_lint}" ]; then
+        local error_argument_incorrect="Error: \$(lintJS) expects a space-separated list of Aura/LWC files or directories as arguments."
+        displayErrorAndQuit "${error_argument_incorrect}"
+    elif [ ! -f "${js_linter_path}" ]; then
+        local error_no_js_linter="Error with locating npm or ESLint. Ensure npm is installed, run \"npm install\" from the repo directory, and then try again."
+        displayErrorAndQuit "${error_no_js_linter}"
+    fi
+
+    # Lints the JS files and outputs the results.
+    {
+        node ${js_linter_path} --no-error-on-unmatched-pattern ${js_files_to_lint}
+    } ||
+    {
+        # ESLint documentation specifies exit status of 2 indicates ESLint internal issues.
+        local js_linter_status="$?"
+        if [ "${js_linter_status}" -eq 2 ]; then
+            local error_linting_js="Error: Aura/LWC linting failed due to an ESLint configuration problem or internal error."
+            displayErrorAndQuit "${error_linting_js}"
+        else
+            return "${js_linter_status}"
+        fi
+    }
+
+}
+
+
+# @description Lints Apex .cls files and outputs linting results.
+# @param {$1} Comma-separated list of files or directories containing Apex files for linting.
+lintCls () {
+    # Quits for invalid arguments, or if PMD is not installed.
+    local cls_files_to_lint="$*"
+    local cls_linter_path="${pmd_script_path}"
+    if [ -z "${cls_files_to_lint}" ]; then
+        local error_argument_incorrect="Error: \$(lintCls) expects Apex directories or files as arguments."
+        displayErrorAndQuit "${error_argument_incorrect}"
+    elif [ ! -f "${cls_linter_path}" ]; then
+        local error_no_cls_linter="Error with locating PMD. Please run \"./scripts/postinstall.sh\" from the repo directory and then try again."
+        displayErrorAndQuit "${error_no_cls_linter}"
+    fi
+
+    # Lints the Apex files and outputs the results.
+    local cls_linter_rulesets="force-app/main/default/classes/.pmd-rules.xml"
+    {
+        "${cls_linter_path}" pmd --no-cache --format textcolor --rulesets "${cls_linter_rulesets}" --dir "${cls_files_to_lint}"
+    }  ||
+    {
+        # PMD documentation specifies exit status of 1 indicates PMD internal issues.
+        local cls_linter_status="$?"
+        if [ "$?" -eq 1 ]; then
+            local error_linting_pmd="Error: Apex linting failed due to arguments or a PMD exception."
+            displayErrorAndQuit "${error_linting_pmd}"
+        else
+            return "${cls_linter_status}"
+        fi
+    }
+}
+
