@@ -183,3 +183,49 @@ lintCls () {
     }
 }
 
+
+# @description Lints repo by calling dedicated linting functions for results.
+# @param {$1} Space-separated list of Aura/LWC files or directories for linting, or an empty argument.
+# @param {$2} Comma-separated list of Apex files or directories for linting, or an empty argument.
+lintRepo () {
+    # Quits if invalid arguments are provided.
+    if [ "$#" -ne "2" ]; then
+        local error_argument_incorrect="Error: \$(lintRepo) expects two arguments."
+        local suggestion_argument_js="The first argument is a space-separated list of Aura/LWC files or directories for linting, or an empty argument."
+        local suggestion_argument_cls="The second argument is a comma-separated list of Apex files or directories for linting, or an empty argument."
+        displayErrorThreeLinesAndQuit "${error_argument_incorrect}" "${suggestion_argument_js}" "${suggestion_argument_cls}"
+    fi
+
+    # Lints repo.
+    local js_repo_paths="$1"
+    local cls_repo_paths="$2"
+    local lintJS_results=0
+    local lintCls_results=0
+    local message_linting_now="Linting files now..."
+    displayMessage "${message_linting_now}"
+    
+    # Skips linting if no arguments are given.
+    set +e
+    if [ -n "${js_repo_paths}" ] ; then
+        lintJS "${js_repo_paths}"
+        lintJS_results=$?
+    fi
+    # Single comma argument is used to work around how PMD Linter parses arguments.
+    if [ "${cls_repo_paths}" != "," ] || [ -n "${cls_repo_paths}" ]; then
+        lintCls "${cls_repo_paths}"
+        lintCls_results=$?
+    fi
+    set -e
+    
+    # Displays linting results.
+    echo ""
+    if [ "${lintJS_results}" -ne 0 ] || [ "${lintCls_results}" -ne 0 ]; then
+        local error_linting_failed=">>> Some files FAILED linting. Please check above for details. <<<"
+        displayErrorAndQuit "${error_linting_failed}"
+    else
+        local message_linting_passed=">>> All files PASSED linting. <<<"
+        displayMessage "${message_linting_passed}"
+    fi
+}
+
+
