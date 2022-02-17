@@ -3,12 +3,11 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "test": "./scripts/testpipeline.sh",
     "preinstall": "node scripts/preinstall.js",
     "postinstall": "./scripts/postinstall.sh",
-    "lint:js:options": "eslint --no-error-on-unmatched-pattern",
-    "lint:js:repo": "npm run lint:js:options \"**/{aura,lwc}/**/*.js\"",
-    "lint:js:diff:qa": "git diff --name-only qa | grep -E \".*/(aura|lwc)/.*/.*\\.js$\" | xargs npm run lint:js:options"
+    "lint:diff:all": "./scripts/lint.sh diff:all",
+    "lint:repo:all": "./scripts/lint.sh repo:all",
+    "test": "./scripts/testpipeline.sh"
   },
   "repository": {
     "type": "git",
