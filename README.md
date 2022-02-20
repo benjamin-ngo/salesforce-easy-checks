@@ -1,9 +1,5 @@
 # Salesforce Easy Checks
 
-
-
-## Introduction
-
 Salesforce can be confusing. The differences between Apex, SOQL, Aura, and LWC can be overwhelming.
 
 Let's make life easier. Clone from Salesforce Easy Checks and improve your code quality today!
