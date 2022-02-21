@@ -1,7 +1,7 @@
 # Salesforce Easy Checks
 
-[![Code Check](../../actions/workflows/checks.yaml/badge.svg?branch=main)](../../actions/workflows/checks.yaml)
-[![Test Pipeline Check](../../actions/workflows/testpipeline.yaml/badge.svg?branch=main)](../../actions/workflows/testpipeline.yaml)
+[![Code Check](../../actions/workflows/checks.yaml/badge.svg)](../../actions/workflows/checks.yaml)
+[![Test Pipeline Check](../../actions/workflows/testpipeline.yaml/badge.svg)](../../actions/workflows/testpipeline.yaml)
 
 The differences between Apex, SOQL, Aura, and LWC can be confusing. Let's make life easier.
 
