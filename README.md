@@ -91,9 +91,3 @@ Just run the included Unit Tests and Integration Tests after each customization.
 ```
 
 
-
-## Licensing
-
-Placeholder text.
-
-
