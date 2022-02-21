@@ -12,7 +12,7 @@ set -euo pipefail
 # $(startScript) will set the needed $script_folder_path and $repo_path variables.
 
 
-# @description Displays a message with the script name prepended.
+# @description Displays a message with the script name prepended. 
 # @param {$1} The message text.
 displayMessage () {
     local message="$*"
