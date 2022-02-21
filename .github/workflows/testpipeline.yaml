@@ -6,7 +6,7 @@
 ###########
 
 
-name: Test Pipeline
+name: Test Pipeline Check
 
 on: 
   pull_request:
@@ -22,7 +22,7 @@ on:
 
 jobs:
   testpipeline:
-    name: Test Pipeline
+    name: Test Pipeline Check
     runs-on: ubuntu-20.04
 
     steps:

@@ -1,35 +1,45 @@
 # Salesforce Easy Checks
 
-Salesforce can be confusing. The differences between Apex, SOQL, Aura, and LWC can be overwhelming.
+[![Code Check](../../actions/workflows/checks.yaml/badge.svg?branch=main)](../../actions/workflows/checks.yaml)
+[![Test Pipeline Check](../../actions/workflows/testpipeline.yaml/badge.svg?branch=main)](../../actions/workflows/testpipeline.yaml)
 
-Let's make life easier. Clone from Salesforce Easy Checks and improve your code quality today!
+The differences between Apex, SOQL, Aura, and LWC can be confusing. Let's make life easier.
+
+Clone from Salesforce Easy Checks and improve your code quality today!
+
+![Check the code by running "./scripts/lint.sh diff:all"](/docs/assets/diffAll.gif?raw=true)
 
 
 
 ## Features
 
-- Local scripts provide quick feedback on Apex, Aura, and LWC code
+:heavy_check_mark: Local scripts provide quick feedback on Apex, Aura, and LWC code
 
-- Github Action publishes linting results to increase confidence in Pull Requests
+:heavy_check_mark: Github Action publishes linting results to increase confidence in Pull Requests
 
-- Included Unit Tests and Integration Tests allow painless expansion of features
+:heavy_check_mark: Included Unit Tests and Integration Tests allow painless expansion of features
 
 
 
-# Requirements
+## Requirements
 
-The following software are recommended for Salesforce Easy Checks:
+The following dependencies and versions are recommended for Salesforce Easy Checks:
 
 - A POSIX-complaint environment (ie: [Debian](https://www.debian.org/distrib/), [macOS](https://www.apple.com/ca/macos/), [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install))
 - [Node.js](https://nodejs.org/en/download/) 16.14.0 and npm 8.3.1
 - [unzip](https://packages.debian.org/bullseye/unzip) 6.00
 - [git](https://git-scm.com/downloads) 2.30.2
 
-If other software versions are used, please test extensively first.
+If other versions are used, please run the Unit Tests and Integration Tests first.
+```shell
+./scripts/testpipeline.sh
+```
+
+![Run "./scripts/testpipeline.sh" to test Salesforce Easy Checks.](/docs/assets/testPipeline.gif?raw=true)
 
 
 
-# Getting Started
+## Getting Started
 
 1) [Create your Github Repo](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) from this Template.
 
@@ -65,19 +75,25 @@ If other software versions are used, please test extensively first.
 
    This increases the confidence of Pull Requests.
 
-
-6) *(Optional)* Customize the scripts to meet your needs.
-
-   Scripts have extensive error handling and are built with modular design.
-
-   Run the included Unit Tests and Integration Tests to ensure everything still works.
-   ```shell
-   ./scripts/testpipeline.sh
-   ```
+   ![Review the Pull Requests and see for yourself!](/docs/assets/githubAction.gif?raw=true)
 
 
 
-# Licensing
+## Expert Users
+
+Feel free to customize Salesforce Easy Checks to meet your needs.
+
+All scripts have extensive error handling and are built with modular design.
+
+Just run the included Unit Tests and Integration Tests after each customization.
+```shell
+./scripts/testpipeline.sh
+```
+
+
+
+## Licensing
 
 Placeholder text.
+
 

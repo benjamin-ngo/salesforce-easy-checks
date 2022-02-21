@@ -6,7 +6,7 @@
 ###########
 
 
-name: Check Code
+name: Code Check
 
 on: 
   pull_request:
@@ -20,7 +20,7 @@ on:
 
 jobs:
   checks:
-    name: Check Code
+    name: Code Check
     runs-on: ubuntu-20.04
 
     steps:
